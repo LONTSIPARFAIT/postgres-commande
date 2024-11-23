@@ -1,0 +1,54 @@
+SET SEARCH_PATH="SCH_BE";
+
+DROP TABLE IF  EXISTS "composants";
+
+CREATE TABLE IF NOT EXISTS "SCH_BE".composants(
+	id_compo int NOT NULL,
+	libelle_compo varchar(255) not null,
+	desription_compo text not null,
+	CONSTRAINT composant_pkey primary key (id_compo)
+);
+
+DROP TABLE IF  EXISTS "produits";
+
+CREATE TABLE IF NOT EXISTS "SCH_BE".produits(
+	id_prod int NOT NULL,
+	libelle_prod varchar(255) not null,
+	desription_prod text not null,
+	CONSTRAINT product_pkey primary key (id_prod)
+);
+
+DROP TABLE IF  EXISTS "nommenclatures";
+
+CREATE TABLE IF NOT EXISTS "SCH_BE".nommenclatures(
+	id_prod int NOT NULL,
+	id_compo int not null,
+	nombre_nomen int not null,
+	CONSTRAINT nomen_pkey primary key (id_prod,id_compo),
+
+	CONSTRAINT nomen_id_compo_fkey foreign key (id_compo)
+	references "SCH_BE".composants(id_compo) match simple
+	on update cascade
+	on delete cascade,
+
+	CONSTRAINT nomen_id_prod_fkey foreign key (id_prod)
+	references "SCH_BE".produits(id_prod) match simple
+	on update cascade
+	on delete cascade
+);
+
+
+DROP INDEX IF EXISTS "SCH_BE".idx_desription_prod;
+
+CREATE INDEX IF NOT EXISTS "idx_desription_prod"
+ON "SCH_BE".produits USING BTREE ("desription_prod");
+
+DROP INDEX IF EXISTS "SCH_BE".idx_desription_compo;
+
+CREATE INDEX IF NOT EXISTS "idx_desription_compo"
+ON "SCH_BE".composants USING BTREE ("desription_compo");
+
+DROP INDEX IF EXISTS "SCH_BE".idx_nombre_nomen;
+
+CREATE INDEX IF NOT EXISTS "idx_nombre_nomen"
+ON "SCH_BE".nommenclatures USING BTREE ("nombre_nomen");
